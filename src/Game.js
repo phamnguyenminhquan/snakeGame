@@ -13,6 +13,8 @@ export class Game {
     this.score = 0;
     this.intervalId = null;
 
+    this.isStarted = false;
+
     // Khởi tạo các đối tượng thực tế từ Class
     this.snake = new Snake(10, 10);
     this.food = new Food(this.tileCount);
@@ -52,9 +54,7 @@ export class Game {
     }
 
     // Vẽ lại đồ họa
-    this.clearCanvas();
-    this.food.draw(this.ctx, this.gridSize);
-    this.snake.draw(this.ctx, this.gridSize);
+    this.drawEverything();
   }
 
   clearCanvas() {
@@ -82,12 +82,25 @@ export class Game {
     this.food.randomizePosition();
     this.score = 0;
     this.scoreElement.innerText = this.score;
-    this.start();
+
+    // Đưa game về trạng thái chờ
+    this.isStarted = false;
+    this.drawEverything(); // Vẽ lại trạng thái đứng yên ban đầu
   }
 
   // Lắng nghe sự kiện bàn phím
   initInput() {
     document.addEventListener("keydown", (e) => {
+      // Nếu phím bấm không phải là 4 phím mũi tên thì bỏ qua
+      if (![37, 38, 39, 40].includes(e.keyCode)) return;
+
+      // Bẫy kích hoạt: Nếu game chưa bắt đầu, bấm mũi tên sẽ kích hoạt game
+      if (!this.isStarted) {
+        this.isStarted = true;
+        this.start();
+      }
+
+      // Đổi hướng rắn như bình thường
       switch (e.keyCode) {
         case 37:
           this.snake.setDirection(-1, 0);
@@ -103,5 +116,11 @@ export class Game {
           break; // Xuống
       }
     });
+  }
+
+  drawEverything() {
+    this.clearCanvas();
+    this.food.draw(this.ctx, this.gridSize);
+    this.snake.draw(this.ctx, this.gridSize);
   }
 }
