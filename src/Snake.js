@@ -45,4 +45,17 @@ export class Snake {
     }
     return false;
   }
+
+  // Draw in Canvas
+  draw(ctx, gridSize) {
+    this.body.forEach((part, index) => {
+      ctx.fillStyle = index === 0 ? "#45a049" : "#4CAF50";
+      ctx.fillRect(
+        part.x * gridSize,
+        part.y * gridSize,
+        gridSize - 2,
+        gridSize - 2,
+      );
+    });
+  }
 }
